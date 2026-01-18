@@ -23,7 +23,7 @@ echo "▶ Installing dependencies"
 pip install \
   playwright \
   httpx \
-  tqdm
+  tqdm  \
   pytest
 
 echo "▶ Installing Playwright browser (Chromium)"
