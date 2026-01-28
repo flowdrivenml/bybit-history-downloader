@@ -83,7 +83,7 @@ General syntax:
 
     python -m src.main download spot trades \
       --symbol BTCUSDT \
-      --start 2026-01-01 \
+      --start 2025-01-03 \
       --end 2026-01-03 \
       --out ./data \
       --chunk-days 5
@@ -92,7 +92,7 @@ General syntax:
 
     python -m src.main download contract l2book \
       --symbol BTCUSDT \
-      --start 2026-01-01 \
+      --start 2025-01-03 \
       --end 2026-01-03 \
       --out ./data \
       --chunk-days 5
