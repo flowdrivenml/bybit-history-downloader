@@ -25,18 +25,19 @@ The terminal interface shows the requested market, dataset, symbol, date range, 
 
 ## Features
 
-* Spot and Contract markets
-* Historical trades
-* L2 order-book depth data
-* Available-symbol discovery
-* Automatic date-range chunking
-* Headless and visible Firefox execution
-* Progress bars and structured terminal output
-* Automatic extraction of `.zip` and `.gz` files
-* Collection of multiple files triggered by one download
-* Python API and command-line interface
-* No API key or Bybit account required
-* Installable directly from PyPI
+- Spot and Contract markets
+- Historical trades
+- L2 order-book depth data
+- Available-symbol discovery
+- Automatic date-range chunking
+- Headless Firefox execution by default
+- Optional visible-browser mode for debugging
+- Progress bars and structured terminal output
+- Automatic extraction of `.zip` and `.gz` files
+- Collection of multiple files triggered by one download
+- Python API and command-line interface
+- No API key or Bybit account required
+- Installable directly from PyPI
 
 ## Installation
 
@@ -72,19 +73,15 @@ bybit-history --help
 
 ## Requirements
 
-* Linux
-* Python 3.10 or newer
-* Playwright Firefox
+- Linux
+- Python 3.10 or newer
+- Playwright Firefox
 
 Firefox is the only supported browser in the current release.
 
-The CLI runs headlessly by default. Add `--no-headless` before the command to watch the browser automation in real time:
+The downloader runs **headlessly by default**, which is the recommended mode for normal use.
 
-```bash
-bybit-history --no-headless symbols contract
-```
-
-Visible mode is also useful when Bybit changes part of its interface or behaves differently during a headless session.
+Visible browser mode should only be used for debugging. Opening the browser can slightly change page behavior and may expose UI-specific issues that do not occur during normal automated execution.
 
 ## Usage
 
@@ -95,64 +92,31 @@ symbols     List the symbols currently available in Bybit's interface
 download    Download historical data for one symbol and date range
 ```
 
-Global options such as `--no-headless` must be placed before `symbols` or `download`.
-
 ## List available symbols
 
 List Contract symbols:
 
 ```bash
-bybit-history --no-headless symbols contract
+bybit-history symbols contract
 ```
 
 List Spot symbols:
 
 ```bash
-bybit-history --no-headless symbols spot
+bybit-history symbols spot
 ```
 
 The symbol list is rendered in a compact multi-column terminal view:
 
 ![Available Bybit symbols](https://raw.githubusercontent.com/flowdrivenml/bybit-history-downloader/main/images/symbols.png)
 
-Bybit uses a virtualized symbol list, so the program scrolls through the dropdown and collects symbols as they appear. This can take a moment, especially when the market contains many instruments.
+Bybit uses a virtualized symbol list, so the program scrolls through the dropdown and collects symbols as they appear.
+
+This can take a moment, especially when the market contains many instruments.
 
 ## Download historical data
 
 ### Contract trades
-
-```bash
-bybit-history --no-headless download contract trades \
-  --symbol BTCUSDT \
-  --start 2026-08-01 \
-  --end 2026-08-05 \
-  --out ./data/trades \
-  --chunk-days 5
-```
-
-### Spot trades
-
-```bash
-bybit-history --no-headless download spot trades \
-  --symbol BTCUSDT \
-  --start 2026-08-01 \
-  --end 2026-08-05 \
-  --out ./data/trades \
-  --chunk-days 5
-```
-
-### Contract L2 order-book data
-
-```bash
-bybit-history --no-headless download contract l2book \
-  --symbol BTCUSDT \
-  --start 2026-08-01 \
-  --end 2026-08-05 \
-  --out ./data/l2book \
-  --chunk-days 5
-```
-
-To run without displaying the browser, omit `--no-headless`:
 
 ```bash
 bybit-history download contract trades \
@@ -163,21 +127,66 @@ bybit-history download contract trades \
   --chunk-days 5
 ```
 
+### Spot trades
+
+```bash
+bybit-history download spot trades \
+  --symbol BTCUSDT \
+  --start 2026-08-01 \
+  --end 2026-08-05 \
+  --out ./data/trades \
+  --chunk-days 5
+```
+
+### Contract L2 order-book data
+
+```bash
+bybit-history download contract l2book \
+  --symbol BTCUSDT \
+  --start 2026-08-01 \
+  --end 2026-08-05 \
+  --out ./data/l2book \
+  --chunk-days 5
+```
+
+## Debugging with a visible browser
+
+Normal usage should **not** include `--no-headless`.
+
+If the automation does not work correctly on your system, visible-browser mode can help you inspect where the interaction fails:
+
+```bash
+bybit-history --no-headless download contract trades \
+  --symbol BTCUSDT \
+  --start 2026-08-01 \
+  --end 2026-08-05 \
+  --out ./data/trades \
+  --chunk-days 5
+```
+
+You can also inspect symbol discovery:
+
+```bash
+bybit-history --no-headless symbols contract
+```
+
+`--no-headless` is intended as a debugging option rather than the normal way to run the downloader.
+
 ## Output formats
 
 The downloader preserves the data format provided by Bybit:
 
-| Dataset             | Extracted format |
-| ------------------- | ---------------- |
-| Trades              | `.csv`           |
-| L2 order-book depth | `.jsonl`         |
+| Dataset | Extracted format |
+|---|---|
+| Trades | `.csv` |
+| L2 order-book depth | `.jsonl` |
 
 Downloaded archives are processed automatically:
 
-* `.zip` archives are extracted
-* `.gz` files are decompressed
-* compressed archives are removed after successful extraction
-* extracted files remain in the directory passed to `--out`
+- `.zip` archives are extracted
+- `.gz` files are decompressed
+- compressed archives are removed after successful extraction
+- extracted files remain in the directory passed to `--out`
 
 For example:
 
@@ -214,6 +223,34 @@ The chunk size must be greater than zero and smaller than six:
 
 The CLI rejects invalid values before starting the browser.
 
+## What happens during a download
+
+A typical run looks roughly like this:
+
+```text
+Open Bybit historical-data page
+        ↓
+Select Trades or OrderBook
+        ↓
+Select Spot or Contract
+        ↓
+Find the requested symbol
+        ↓
+Select Everyday
+        ↓
+Set the requested date range
+        ↓
+Confirm
+        ↓
+Download files
+        ↓
+Extract archives automatically
+        ↓
+Save ready-to-use CSV or JSONL files
+```
+
+The terminal UI reports the job configuration, chunk progress, download progress, file sizes, elapsed time, and final output paths.
+
 ## Python API
 
 The downloader can also be used directly from Python:
@@ -228,7 +265,7 @@ from bybit_history import BybitHistoryClient
 async def main() -> None:
     async with BybitHistoryClient(
         browser_name="firefox",
-        headless=False,
+        headless=True,
     ) as client:
         files: list[Path] = await client.download_data(
             margin="Contract",
@@ -250,30 +287,10 @@ if __name__ == "__main__":
 
 `download_data()` returns the paths produced after downloading and extraction.
 
-## How it works
+For debugging, you can run the Python client with:
 
-The automated workflow is roughly:
-
-```text
-Open Bybit historical-data page
-        ↓
-Recover from an initial regional redirect when necessary
-        ↓
-Select Trades or OrderBook
-        ↓
-Select Spot or Contract
-        ↓
-Open the virtualized symbol list
-        ↓
-Scroll until the requested symbol is found
-        ↓
-Select the Everyday frequency
-        ↓
-Enter the requested date range
-        ↓
-Confirm and collect download events
-        ↓
-Save and extract the downloaded files
+```python
+headless=False
 ```
 
 ## Why Playwright?
@@ -290,17 +307,28 @@ Two parts of the workflow required more than ordinary button clicking.
 
 Bybit does not render every symbol in the document at once. Only the currently visible part of the dropdown exists in the page.
 
-The client therefore positions the mouse inside the open list, scrolls it in small steps, and checks the newly rendered options until it finds the requested symbol or reaches the search limit.
+The client therefore positions the mouse inside the open list, scrolls it in small steps, and checks newly rendered options until it finds the requested symbol.
 
-The `symbols` command uses the same mechanism to collect the complete visible catalogue.
+The `symbols` command uses the same scrolling approach to collect the available symbol catalogue.
 
 ### Multiple download events
 
-One download action can trigger more than one file. The client listens for the first Playwright download event and continues collecting additional events for a short period before saving and processing the results.
+One download action can trigger more than one file.
+
+The client listens for the first Playwright download event and continues collecting additional events for a short period before saving and processing the results.
 
 ### Automatic extraction
 
-Downloaded files are saved using Bybit’s suggested filenames. ZIP and GZIP archives are extracted automatically, and the processed archives are removed afterward.
+Downloaded files are saved using Bybit’s suggested filenames.
+
+ZIP and GZIP archives are extracted automatically, and processed archives are removed afterward.
+
+The result is ready-to-use data:
+
+```text
+Trades  → CSV
+L2Book  → JSONL
+```
 
 ## Development installation
 
@@ -345,28 +373,19 @@ This project depends on the structure and visible text of Bybit’s public websi
 
 Current limitations include:
 
-* Linux only
-* Firefox only
-* `chunk-days` must remain below six
-* symbol discovery may take time because the list is virtualized
-* availability depends on the market, symbol, dataset, and requested date range
-* L2 order-book files can be very large
-* browser automation is slower and more fragile than a stable direct-download API
-* headless and visible sessions may occasionally behave differently
+- Linux only
+- Firefox only
+- `chunk-days` must remain below six
+- symbol discovery may take time because the list is virtualized
+- availability depends on the market, symbol, dataset, and requested date range
+- L2 order-book files can be very large
+- browser automation is slower and more fragile than a stable direct-download API
+- visible browser mode may behave differently from the default headless execution
 
-When an interaction fails, visible mode is the easiest way to inspect what happened:
-
-```bash
-bybit-history --no-headless download contract trades \
-  --symbol BTCUSDT \
-  --start 2026-08-01 \
-  --end 2026-08-05 \
-  --out ./data/trades
-```
+If the default headless execution fails on your system, use `--no-headless` to inspect the browser interaction and diagnose where the workflow stops.
 
 ## Disclaimer
 
 This project is not affiliated with, maintained by, or endorsed by Bybit.
 
 It automates access to Bybit’s public historical-data interface. Users are responsible for following Bybit’s terms, applicable limits, and any requirements governing their use of the downloaded data.
-
