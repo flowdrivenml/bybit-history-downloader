@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bybit-history-downloader"
+version = "0.1.0"
+description = "Download historical Bybit trades and L2 order-book data using Playwright."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+
+dependencies = [
+    "playwright",
+    "rich",
+]
+
+[project.scripts]
+bybit-history = "bybit_history.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bybit_history"]

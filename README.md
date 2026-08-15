@@ -1,141 +1,372 @@
-# 📊 Bybit Historical Data Puller (Playwright)
+# Bybit History Downloader
 
-Bybit provides **high-quality historical market data**, including:
-- Full trade history  
-- Deep L2 order books  
-- Spot & derivatives markets  
+[![PyPI version](https://img.shields.io/pypi/v/bybit-history-downloader.svg)](https://pypi.org/project/bybit-history-downloader/0.1.0/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](#requirements)
+[![Platform](https://img.shields.io/badge/platform-Linux-informational.svg)](#requirements)
+[![Browser](https://img.shields.io/badge/browser-Firefox-orange.svg)](#requirements)
 
-The downside is that **downloading this data manually is painful** — lots of UI clicks, symbol/date selection, and repeating the same workflow over and over.
+**Historical market data, without the repetitive clicks.**
 
----
+Bybit History Downloader is a Python CLI and library that automates downloads from Bybit’s public historical-data page.
 
-## 💡 What this project does
+I built it while collecting market data for research and experiments. The files are publicly available, but downloading longer periods manually means repeating the same browser workflow for every symbol and date range.
 
-This tool **automates the entire Bybit download flow** using Playwright:
-- handles all UI interaction for you
-- selects symbols and date ranges
-- downloads and saves data locally
+The downloader handles that workflow for you: it opens the page, selects the market and dataset, finds the requested symbol, divides longer date ranges into smaller chunks, downloads the files, and extracts them locally.
 
-The goal is to make historical data collection **fast, repeatable, and hands-off**.
+> **Current support:** Linux distributions and Firefox only. Chromium, WebKit, native Windows, and macOS are not supported in the current release.
 
----
+> This project uses browser automation. It is not an official Bybit API client.
 
-## ⚠️ Project status
+## Demo
 
-🚧 **Fresh release — expect rough edges**
+![Bybit historical-data download](https://raw.githubusercontent.com/flowdrivenml/bybit-history-downloader/main/images/data.png)
 
-Bybit UI changes and browser automation can be flaky.
-If something breaks:
-- try running with `--no-headless` to see the browser
-- reduce `--chunk-days` if downloads fail
+The terminal interface shows the requested market, dataset, symbol, date range, progress, produced files, final sizes, and output directory.
 
-Bug reports and PRs are welcome.
+## Features
 
----
+* Spot and Contract markets
+* Historical trades
+* L2 order-book depth data
+* Available-symbol discovery
+* Automatic date-range chunking
+* Headless and visible Firefox execution
+* Progress bars and structured terminal output
+* Automatic extraction of `.zip` and `.gz` files
+* Collection of multiple files triggered by one download
+* Python API and command-line interface
+* No API key or Bybit account required
+* Installable directly from PyPI
 
-## 🚀 Quick Start (Linux / WSL)
+## Installation
 
-⚠️ Not for native Windows.  
-Use **WSL (Ubuntu)** or a Linux machine.
+The package is available on [PyPI](https://pypi.org/project/bybit-history-downloader/0.1.0/).
 
-From the project root, run:
+A virtual environment is recommended:
 
-    chmod +x setup.sh
-    ./setup.sh
-    source .venv/bin/activate
-    export PYTHONPATH=$PWD/src
+```bash
+python -m venv .venv
+source .venv/bin/activate
 
-That’s it — **no manual downloads, cookies, or browser setup required**.
+python -m pip install --upgrade pip
+python -m pip install bybit-history-downloader
+```
 
----
+Playwright installs its browser separately. Install Firefox after installing the package:
 
-## 🖥️ CLI Usage
+```bash
+python -m playwright install firefox
+```
 
-Entry point:  
-`src/main.py`
+If your Linux distribution is missing Firefox system dependencies, install them with:
 
-General syntax:
+```bash
+python -m playwright install-deps firefox
+```
 
-    python -m src.main [GLOBAL OPTIONS] <command> [COMMAND OPTIONS]
+Confirm that the CLI is available:
 
-### Global options
+```bash
+bybit-history --help
+```
 
-| Flag | Description |
-|------|------------|
-| `--browser` | firefox (default), chromium, webkit |
-| `--headless / --no-headless` | Run browser headless (default: headless) |
+## Requirements
 
----
+* Linux
+* Python 3.10 or newer
+* Playwright Firefox
 
-## ✅ What you can do
+Firefox is the only supported browser in the current release.
 
-### 1) List spot symbols
+The CLI runs headlessly by default. Add `--no-headless` before the command to watch the browser automation in real time:
 
-    python -m src.main symbols spot
+```bash
+bybit-history --no-headless symbols contract
+```
 
-### 2) List contract symbols
+Visible mode is also useful when Bybit changes part of its interface or behaves differently during a headless session.
 
-    python -m src.main symbols contract
+## Usage
 
-### 3) Download historical data
+The CLI provides two main commands:
 
-**Spot trades example**
+```text
+symbols     List the symbols currently available in Bybit's interface
+download    Download historical data for one symbol and date range
+```
 
-    python -m src.main download spot trades \
-      --symbol BTCUSDT \
-      --start 2025-01-03 \
-      --end 2026-01-03 \
-      --out ./data \
-      --chunk-days 5
+Global options such as `--no-headless` must be placed before `symbols` or `download`.
 
-**Contract L2 order book example**
+## List available symbols
 
-    python -m src.main download contract l2book \
-      --symbol BTCUSDT \
-      --start 2025-01-03 \
-      --end 2026-01-03 \
-      --out ./data \
-      --chunk-days 5
+List Contract symbols:
 
-### Supported datasets
-- trades  
-- l2book  
+```bash
+bybit-history --no-headless symbols contract
+```
 
----
+List Spot symbols:
 
-## ⚠️ Chunking rule (important)
+```bash
+bybit-history --no-headless symbols spot
+```
 
-    chunk-days MUST be < 6
+The symbol list is rendered in a compact multi-column terminal view:
 
-This is a **Bybit UI limitation**.  
-The CLI will error if you exceed it.
+![Available Bybit symbols](https://raw.githubusercontent.com/flowdrivenml/bybit-history-downloader/main/images/symbols.png)
 
----
+Bybit uses a virtualized symbol list, so the program scrolls through the dropdown and collects symbols as they appear. This can take a moment, especially when the market contains many instruments.
 
-## 🧠 Python API (library usage)
+## Download historical data
 
-You can also use this directly in Python:
+### Contract trades
 
-    from src.client import BybitHistoryClient
-    import asyncio
+```bash
+bybit-history --no-headless download contract trades \
+  --symbol BTCUSDT \
+  --start 2026-08-01 \
+  --end 2026-08-05 \
+  --out ./data/trades \
+  --chunk-days 5
+```
 
-    async def run():
-        async with BybitHistoryClient() as c:
-            await c.download_data(
-                margin="Spot",
-                data_type="Trades",
-                symbol="BTCUSDT",
-                start_date="2026-01-01",
-                end_date="2026-01-03",
-                final_path="./data",
-                chunk_days=5,
-            )
+### Spot trades
 
-    asyncio.run(run())
+```bash
+bybit-history --no-headless download spot trades \
+  --symbol BTCUSDT \
+  --start 2026-08-01 \
+  --end 2026-08-05 \
+  --out ./data/trades \
+  --chunk-days 5
+```
 
----
+### Contract L2 order-book data
 
-## ⚠️ Disclaimer
+```bash
+bybit-history --no-headless download contract l2book \
+  --symbol BTCUSDT \
+  --start 2026-08-01 \
+  --end 2026-08-05 \
+  --out ./data/l2book \
+  --chunk-days 5
+```
 
-This tool automates Bybit’s **public web UI**.  
-Use responsibly and **at your own risk**.
+To run without displaying the browser, omit `--no-headless`:
+
+```bash
+bybit-history download contract trades \
+  --symbol BTCUSDT \
+  --start 2026-08-01 \
+  --end 2026-08-05 \
+  --out ./data/trades \
+  --chunk-days 5
+```
+
+## Output formats
+
+The downloader preserves the data format provided by Bybit:
+
+| Dataset             | Extracted format |
+| ------------------- | ---------------- |
+| Trades              | `.csv`           |
+| L2 order-book depth | `.jsonl`         |
+
+Downloaded archives are processed automatically:
+
+* `.zip` archives are extracted
+* `.gz` files are decompressed
+* compressed archives are removed after successful extraction
+* extracted files remain in the directory passed to `--out`
+
+For example:
+
+```text
+data/
+└── trades/
+    ├── BTCUSDT2026-08-01.csv
+    └── BTCUSDT2026-08-02.csv
+```
+
+L2 order-book datasets can be significantly larger than trade datasets, especially over longer periods.
+
+## Date chunking
+
+Bybit’s interface accepts relatively small date windows for this workflow. The downloader therefore divides longer requests into smaller inclusive ranges.
+
+For example:
+
+```text
+Requested range: 2026-08-01 → 2026-08-12
+Chunk size:      5 days
+
+Generated chunks:
+2026-08-01 → 2026-08-05
+2026-08-06 → 2026-08-10
+2026-08-11 → 2026-08-12
+```
+
+The chunk size must be greater than zero and smaller than six:
+
+```bash
+--chunk-days 5
+```
+
+The CLI rejects invalid values before starting the browser.
+
+## Python API
+
+The downloader can also be used directly from Python:
+
+```python
+import asyncio
+from pathlib import Path
+
+from bybit_history import BybitHistoryClient
+
+
+async def main() -> None:
+    async with BybitHistoryClient(
+        browser_name="firefox",
+        headless=False,
+    ) as client:
+        files: list[Path] = await client.download_data(
+            margin="Contract",
+            data_type="Trades",
+            symbol="BTCUSDT",
+            start_date="2026-08-01",
+            end_date="2026-08-05",
+            final_path="./data/trades",
+            chunk_days=5,
+        )
+
+    for file in files:
+        print(file)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+`download_data()` returns the paths produced after downloading and extraction.
+
+## How it works
+
+The automated workflow is roughly:
+
+```text
+Open Bybit historical-data page
+        ↓
+Recover from an initial regional redirect when necessary
+        ↓
+Select Trades or OrderBook
+        ↓
+Select Spot or Contract
+        ↓
+Open the virtualized symbol list
+        ↓
+Scroll until the requested symbol is found
+        ↓
+Select the Everyday frequency
+        ↓
+Enter the requested date range
+        ↓
+Confirm and collect download events
+        ↓
+Save and extract the downloaded files
+```
+
+## Why Playwright?
+
+The files are exposed through Bybit’s website, where the interface controls market selection, dataset selection, symbols, date ranges, and download actions.
+
+A direct HTTP downloader would be simpler if a stable public file endpoint covered the same workflow. This project instead automates the interface that Bybit currently exposes, allowing the process to run from a terminal or Python program without repeating the same browser actions manually.
+
+## Implementation details
+
+Two parts of the workflow required more than ordinary button clicking.
+
+### Virtualized symbol list
+
+Bybit does not render every symbol in the document at once. Only the currently visible part of the dropdown exists in the page.
+
+The client therefore positions the mouse inside the open list, scrolls it in small steps, and checks the newly rendered options until it finds the requested symbol or reaches the search limit.
+
+The `symbols` command uses the same mechanism to collect the complete visible catalogue.
+
+### Multiple download events
+
+One download action can trigger more than one file. The client listens for the first Playwright download event and continues collecting additional events for a short period before saving and processing the results.
+
+### Automatic extraction
+
+Downloaded files are saved using Bybit’s suggested filenames. ZIP and GZIP archives are extracted automatically, and the processed archives are removed afterward.
+
+## Development installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/flowdrivenml/bybit-history-downloader.git
+cd bybit-history-downloader
+```
+
+Create and activate a virtual environment:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
+Install the project in editable mode:
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install -e .
+python -m pip install pytest pytest-asyncio
+python -m playwright install firefox
+```
+
+Run the tests:
+
+```bash
+pytest -v
+```
+
+Run the local CLI:
+
+```bash
+bybit-history --help
+```
+
+## Limitations
+
+This project depends on the structure and visible text of Bybit’s public website. A substantial redesign may require selector updates.
+
+Current limitations include:
+
+* Linux only
+* Firefox only
+* `chunk-days` must remain below six
+* symbol discovery may take time because the list is virtualized
+* availability depends on the market, symbol, dataset, and requested date range
+* L2 order-book files can be very large
+* browser automation is slower and more fragile than a stable direct-download API
+* headless and visible sessions may occasionally behave differently
+
+When an interaction fails, visible mode is the easiest way to inspect what happened:
+
+```bash
+bybit-history --no-headless download contract trades \
+  --symbol BTCUSDT \
+  --start 2026-08-01 \
+  --end 2026-08-05 \
+  --out ./data/trades
+```
+
+## Disclaimer
+
+This project is not affiliated with, maintained by, or endorsed by Bybit.
+
+It automates access to Bybit’s public historical-data interface. Users are responsible for following Bybit’s terms, applicable limits, and any requirements governing their use of the downloaded data.
+
