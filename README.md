@@ -1,4 +1,4 @@
-# Bybit Trading Data Downloader
+# Bybit Historical Market Data Downloader
 
 [![PyPI version](https://img.shields.io/pypi/v/bybit-history-downloader.svg)](https://pypi.org/project/bybit-history-downloader/0.1.0/)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](#requirements)
