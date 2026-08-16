@@ -76,7 +76,13 @@ Spot:
 bybit-history symbols spot
 ```
 
-### Download trades
+![Available Bybit symbols](https://raw.githubusercontent.com/flowdrivenml/bybit-history-downloader/main/images/symbols.png)
+
+The CLI scans Bybit's symbol list and prints the available instruments in a compact terminal view.
+
+### Download historical data
+
+Trades:
 
 ```bash
 bybit-history download contract trades \
@@ -87,7 +93,7 @@ bybit-history download contract trades \
   --chunk-days 5
 ```
 
-### Download L2 order-book data
+L2 order-book data:
 
 ```bash
 bybit-history download contract l2book \
@@ -97,6 +103,10 @@ bybit-history download contract l2book \
   --out ./data/l2book \
   --chunk-days 5
 ```
+
+![Bybit historical-data download](https://raw.githubusercontent.com/flowdrivenml/bybit-history-downloader/main/images/data.png)
+
+The terminal shows the selected market, dataset, symbol, date range, progress, produced files, file sizes, and output directory.
 
 Long date ranges are automatically divided into smaller chunks.
 
@@ -166,5 +176,7 @@ data/
 - Symbol discovery can take some time
 - L2 datasets can be very large
 - Website changes may require selector updates
+
+This project is not affiliated with or endorsed by Bybit.
 
 This project is not affiliated with or endorsed by Bybit.
