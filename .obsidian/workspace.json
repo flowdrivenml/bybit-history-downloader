@@ -190,6 +190,7 @@
   },
   "active": "14b5a0dd8111cfc9",
   "lastOpenFiles": [
+    "README.md~",
     "tests/live/__pycache__/test_bybit_regressions.cpython-312-pytest-9.1.1.pyc",
     "tests/live/test_bybit_regressions.py~",
     "tests/live/test_bybit_regressions.py",
@@ -200,7 +201,6 @@
     "data/raw/bybit/perpetual/linear/trade_ticks/BTCUSDT/BTCUSDT2026-08-14.csv.gz.manifest.json",
     "data/raw/bybit/perpetual/linear/trade_ticks/BTCUSDT/BTCUSDT2026-08-14.csv.gz.manifest.json.tmp",
     "data/raw/bybit/perpetual/linear/trade_ticks/BTCUSDT/BTCUSDT2026-08-14.csv.gz",
-    "data/raw/bybit/perpetual/linear/trade_ticks/BTCUSDT/BTCUSDT2026-08-14.csv.gz.part",
     "docs/Acquisition Map.md",
     "docs/Plan.md",
     "docs/prompts/source.md",

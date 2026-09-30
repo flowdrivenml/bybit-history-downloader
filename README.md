@@ -5,6 +5,13 @@
 [![Platform](https://img.shields.io/badge/platform-Linux-informational.svg)](#requirements)
 [![Browser](https://img.shields.io/badge/browser-Firefox-orange.svg)](#requirements)
 
+
+> [!IMPORTANT]
+> **🚧 Currently in active development.**
+>
+> MarketForge is not yet ready for general use. The initial release is expected to be completed within the next few days.
+
+
 **Historical market data, without the repetitive clicks.**
 
 Python CLI and library for downloading public Bybit historical market data.
