@@ -74,3 +74,9 @@ Thumbs.db
 *.log
 tmp/
 temp/
+
+# Obsidian
+.obsidian/
+
+# Jupyter virtual documents
+.virtual_documents/
