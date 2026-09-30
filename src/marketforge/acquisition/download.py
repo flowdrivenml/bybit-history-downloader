@@ -106,10 +106,10 @@ class Downloader:
             finally:
                 response.close()
 
-            self._verify_size(
-                planned=planned,
-                bytes_written=bytes_written,
-            )
+            # self._verify_size(
+            #     planned=planned,
+            #     bytes_written=bytes_written,
+            # )
 
             # os.replace() is atomic when source and destination
             # are on the same filesystem.

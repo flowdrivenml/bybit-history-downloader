@@ -26,11 +26,28 @@ dist/
 
 # Downloaded / generated market data
 data/
-# downloads/
+downloads/
+
+# Large raw market-data files
 *.csv
 *.csv.gz
 *.jsonl
 *.jsonl.gz
+*.data
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.xlsx
+*.xls
+*.parquet
+
+# Obsidian
+.obsidian/
+
+# Jupyter virtual documents
+.virtual_documents/
+.virtual_documents/notebooks/
 
 # Repomix
 repomix-output.xml

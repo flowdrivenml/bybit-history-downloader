@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/Plan.md",
+                "file": "docs/raw-formats/OKX-T1 — Option Trades.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Plan"
+              "title": "OKX-T1 — Option Trades"
             }
           }
         ]
@@ -190,26 +190,41 @@
   },
   "active": "14b5a0dd8111cfc9",
   "lastOpenFiles": [
-    "README.md~",
-    "tests/live/__pycache__/test_bybit_regressions.cpython-312-pytest-9.1.1.pyc",
-    "tests/live/test_bybit_regressions.py~",
-    "tests/live/test_bybit_regressions.py",
-    "src/marketforge/cli/ui/__pycache__/instruments.cpython-312.pyc",
-    "src/marketforge/cli/commands/instruments.py~",
-    "src/marketforge/cli/ui/instruments.py~",
-    "src/marketforge/cli/ui/instruments.py",
-    "data/raw/bybit/perpetual/linear/trade_ticks/BTCUSDT/BTCUSDT2026-08-14.csv.gz.manifest.json",
-    "data/raw/bybit/perpetual/linear/trade_ticks/BTCUSDT/BTCUSDT2026-08-14.csv.gz.manifest.json.tmp",
-    "data/raw/bybit/perpetual/linear/trade_ticks/BTCUSDT/BTCUSDT2026-08-14.csv.gz",
-    "docs/Acquisition Map.md",
-    "docs/Plan.md",
+    "docs/raw-formats/README.md",
+    "docs/raw-formats/OKX-T1 — Option Trades.md",
+    "tests/fixtures/raw/okx/option/option/trade_ticks/BTC/BTC-USD-optionchain-trades-2026-09-08.zip.manifest.json",
+    "tests/fixtures/raw/okx/option/option/trade_ticks/BTC/BTC-USD-optionchain-trades-2026-09-08.zip.manifest.json.tmp",
+    "tests/fixtures/raw/okx/option/option/trade_ticks/BTC/BTC-USD-optionchain-trades-2026-09-08.zip",
+    "tests/fixtures/raw/okx/option/option/trade_ticks/BTC/BTC-USD-optionchain-trades-2026-09-08.zip.part",
+    "tests/fixtures/raw/okx/option/option/trade_ticks/BTC/BTC-USD-optionchain-trades-2026-09-07.zip.manifest.json",
+    "tests/fixtures/raw/okx/option/option/trade_ticks/BTC/BTC-USD-optionchain-trades-2026-09-07.zip.manifest.json.tmp",
+    "tests/fixtures/raw/okx/option/option/trade_ticks/BTC/BTC-USD-optionchain-trades-2026-09-07.zip",
+    "tests/fixtures/raw/okx/option/option/trade_ticks/BTC/BTC-USD-optionchain-trades-2026-09-07.zip.part",
+    "tests/fixtures/raw/okx/option/option/trade_ticks/BTC/BTC-USD-optionchain-trades-2026-09-06.zip.manifest.json",
+    "tests/fixtures/raw/okx/option/option/trade_ticks/BTC/BTC-USD-optionchain-trades-2026-09-06.zip.manifest.json.tmp",
+    "docs/prompts/Raw Historical Market-Data Format Inspection.md",
+    "docs/raw-formats/GATE-B2 — Inverse Perpetual L2.md",
+    "docs/raw-formats/BINANCE-T2 — Linear Perpetual Trades.md",
+    "docs/raw-formats/BINANCE-T3 — Inverse Perpetual Trades.md",
+    "docs/raw-formats/GATE-B2 — Linear Perpetual L2 1.md",
     "docs/prompts/source.md",
-    "docs/Availability Discovery.md",
-    "docs/CLI.md",
-    "docs/Data Structure.md",
-    "docs/Historical Tick-Level Microstructure Data.md",
-    "docs/testing.md",
-    "docs/plan.md",
-    "Untitled.md"
+    "docs/Acquisition Map.md",
+    "docs/raw-formats/GATE-B1 — Spot L2.md",
+    "docs/raw-formats/GATE-T2 — Inverse Perpetual Trades.md",
+    "docs/raw-formats/GATE-T2 — Linear Perpetual Trades.md",
+    "docs/raw-formats/GATE-T1 — Spot Trades.md",
+    "docs/raw-formats/BITGET-B1 — Spot L2.md",
+    "docs/raw-formats/BITGET-B1 — Linear Perpetual L2.md",
+    "docs/raw-formats/BITGET-B1 — Inverse Perpetual L2.md",
+    "docs/raw-formats/BITGET-T1 — Linear Perpetual Trades.md",
+    "docs/raw-formats/BITGET-T1 — Spot Trades.md",
+    "docs/raw-formats/OKX-B2 — Option L2.md",
+    "docs/raw-formats/OKX-B1 — Inverse Perpetual L2.md",
+    "docs/raw-formats/OKX-T1 — Spot Trades.md",
+    "docs/raw-formats/OKX-B1 — Linear Perpetual L2.md",
+    "docs/raw-formats/OKX-T1 — Inverse Perpetual Trades.md",
+    "docs/raw-formats/OKX-T1 — Linear Perpetual Trades.md",
+    "docs/raw-formats/OKX-B1 — Spot L2.md",
+    "docs/raw-formats/BINANCE-T1 — Spot Trades.md"
   ]
 }

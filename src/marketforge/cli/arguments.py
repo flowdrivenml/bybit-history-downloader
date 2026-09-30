@@ -5,8 +5,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from marketforge.models import (
+    AcquisitionPlan,
     AcquisitionRequest,
+    BaseCoin,
     DataType,
+    DownloadAction,
     Exchange,
     Instrument,
     InstrumentType,
@@ -38,9 +41,19 @@ def add_request_arguments(
         choices=[category.value for category in MarketCategory],
     )
 
-    parser.add_argument(
-        "--symbol",
+    target = parser.add_mutually_exclusive_group(
         required=True,
+    )
+
+    target.add_argument(
+        "--symbol",
+        help="Specific exchange instrument symbol.",
+    )
+
+    target.add_argument(
+        "--base-coin",
+        dest="base_coin",
+        help=("Base-coin target for grouped datasets, " "for example BTC options."),
     )
 
     parser.add_argument(
@@ -81,16 +94,28 @@ def request_from_args(
 ) -> AcquisitionRequest:
     """Build an AcquisitionRequest from parsed CLI arguments."""
 
-    instrument = Instrument(
-        exchange=Exchange(args.exchange),
-        instrument_type=InstrumentType(args.instrument_type),
-        market_category=MarketCategory(args.category),
-        symbol=args.symbol,
-        family=args.family,
-    )
+    exchange = Exchange(args.exchange)
+
+    market_category = MarketCategory(args.category)
+
+    if args.base_coin is not None:
+        target = BaseCoin(
+            exchange=exchange,
+            market_category=market_category,
+            symbol=args.base_coin,
+        )
+
+    else:
+        target = Instrument(
+            exchange=exchange,
+            instrument_type=InstrumentType(args.instrument_type),
+            market_category=market_category,
+            symbol=args.symbol,
+            family=args.family,
+        )
 
     return AcquisitionRequest(
-        target=instrument,
+        target=target,
         data_type=DataType(args.data_type),
         start=parse_datetime(args.start),
         end=parse_datetime(args.end),

@@ -6,7 +6,7 @@ from rich.table import Table
 from rich.text import Text
 
 from marketforge.cli.ui.console import console
-from marketforge.models import AcquisitionPlan, DownloadAction
+from marketforge.models import AcquisitionPlan, BaseCoin, DownloadAction
 
 
 def print_plan(
@@ -17,10 +17,19 @@ def print_plan(
     request = plan.request
     target = request.target
 
+    if isinstance(target, BaseCoin):
+        if plan.downloads:
+            instrument_type = plan.downloads[0].remote_file.instrument_type.value
+        else:
+            instrument_type = "option"
+
+    else:
+        instrument_type = target.instrument_type.value
+
     _print_header(
         exchange=target.exchange.value,
         symbol=target.symbol,
-        instrument_type=target.instrument_type.value,
+        instrument_type=instrument_type,
         market_category=target.market_category.value,
         data_type=request.data_type.value,
         start=request.start.isoformat(),

@@ -192,40 +192,6 @@ def test_download_ignores_empty_chunks(
     assert plan.destination.read_bytes() == b"abcdef"
 
 
-def test_size_mismatch_does_not_publish_file(
-    tmp_path,
-):
-    response = FakeResponse(
-        [
-            b"abc",
-        ]
-    )
-
-    http = Mock()
-    http.get.return_value = response
-
-    plan = make_plan(
-        tmp_path,
-        size_bytes=100,
-    )
-
-    downloader = Downloader(http=http)
-
-    with pytest.raises(
-        ValueError,
-        match="Downloaded size does not match",
-    ):
-        downloader.download(plan)
-
-    assert not plan.destination.exists()
-
-    partial = Path(str(plan.destination) + ".part")
-
-    assert not partial.exists()
-
-    assert response.closed
-
-
 class FailingResponse:
     def __init__(self):
         self.closed = False

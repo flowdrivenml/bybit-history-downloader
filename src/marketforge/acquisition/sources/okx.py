@@ -333,8 +333,32 @@ class OKXSource(Source):
             end,
         )
 
-        if isinstance(target, BaseCoin):
-            raise ValueError("OKX historical availability requires an Instrument")
+        if isinstance(
+            target,
+            BaseCoin,
+        ):
+            instrument = self._option_instrument_from_base_coin(target)
+
+            if not self.supports(
+                InstrumentType.OPTION,
+                MarketCategory.OPTION,
+                data_type,
+            ):
+                raise ValueError("Unsupported OKX option data combination")
+
+            files = self._discover_history_files(
+                instrument=instrument,
+                data_type=data_type,
+                start=start,
+                end=end,
+            )
+
+            return Availability(
+                exchange=self.exchange,
+                target=target,
+                data_type=data_type,
+                files=tuple(files),
+            )
 
         if not isinstance(
             target,
@@ -377,8 +401,25 @@ class OKXSource(Source):
             end,
         )
 
-        if isinstance(target, BaseCoin):
-            raise ValueError("OKX historical file discovery requires an Instrument")
+        if isinstance(
+            target,
+            BaseCoin,
+        ):
+            if not self.supports(
+                InstrumentType.OPTION,
+                MarketCategory.OPTION,
+                data_type,
+            ):
+                raise ValueError("Unsupported OKX option data combination")
+
+            instrument = self._option_instrument_from_base_coin(target)
+
+            return self._discover_history_files(
+                instrument=instrument,
+                data_type=data_type,
+                start=start,
+                end=end,
+            )
 
         if not isinstance(
             target,
@@ -1003,3 +1044,41 @@ class OKXSource(Source):
 
         if code != "0":
             raise ValueError("OKX API error " f"{code}: " f"{payload.get('msg')}")
+
+    def _option_instrument_from_base_coin(
+        self,
+        base_coin: BaseCoin,
+    ) -> Instrument:
+        """Resolve an option BaseCoin to its OKX historical instrument family."""
+
+        if base_coin.market_category != MarketCategory.OPTION:
+            raise ValueError("OKX BaseCoin targets require " "MarketCategory.OPTION")
+
+        prefix = base_coin.symbol.upper() + "-"
+
+        families = sorted(
+            family
+            for family in self._option_families()
+            if family.upper().startswith(prefix)
+        )
+
+        if not families:
+            raise ValueError(
+                "No OKX option family found for " f"base coin {base_coin.symbol}"
+            )
+
+        if len(families) != 1:
+            raise ValueError(
+                "Multiple OKX option families found for "
+                f"{base_coin.symbol}: {families}"
+            )
+
+        family = families[0]
+
+        return Instrument(
+            exchange=self.exchange,
+            instrument_type=InstrumentType.OPTION,
+            market_category=MarketCategory.OPTION,
+            symbol=base_coin.symbol,
+            family=family,
+        )
