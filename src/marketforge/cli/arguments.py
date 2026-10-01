@@ -5,11 +5,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from marketforge.models import (
-    AcquisitionPlan,
     AcquisitionRequest,
     BaseCoin,
     DataType,
-    DownloadAction,
     Exchange,
     Instrument,
     InstrumentType,

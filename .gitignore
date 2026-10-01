@@ -69,7 +69,6 @@ repomix-output.*
 # OS files
 .DS_Store
 Thumbs.db
-
 # Logs / temporary files
 *.log
 tmp/

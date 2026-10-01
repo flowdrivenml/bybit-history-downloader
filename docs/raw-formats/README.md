@@ -19,7 +19,7 @@
 |  15 | OKX      | Perpetual  | Linear   | L2     | ☐      | Done   |
 |  16 | OKX      | Perpetual  | Inverse  | Trades | ☐      | Done   |
 |  17 | OKX      | Perpetual  | Inverse  | L2     | ☐      | Done   |
-|  18 | OKX      | Option     | Option   | Trades | ☐      |        |
+|  18 | OKX      | Option     | Option   | Trades | ☐      | Done   |
 |  19 | OKX      | Option     | Option   | L2     | ☐      | Done   |
 |  20 | Bitget   | Spot       | Spot     | Trades | ☐      | Done   |
 |  21 | Bitget   | Spot       | Spot     | L2     | ☐      | Done   |

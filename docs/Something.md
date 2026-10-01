@@ -1,39 +1,5 @@
 ## MarketForge — Next Development Plan
 
-### Current Status
-
-**Acquisition v1 complete.**
-
-- Instrument discovery
-- Historical availability
-- Multi-exchange file discovery
-- Download planning
-- Streaming downloads
-- SHA-256 manifests and verification
-- Automatic reuse
-- Rich CLI
-- Real raw fixtures collected across exchanges and datasets
-
-## Phase 2 — Raw Format Discovery
-
-Inspect `tests/fixtures/raw/` and document every distinct physical data format.
-
-For each format determine:
-
-- Compression/container format
-- Internal files
-- Columns
-- Data types
-- Timestamp format and precision
-- Trade semantics
-- Quantity semantics
-- Order-book structure
-- Snapshot vs update/delta behavior
-- Sequence identifiers
-- Exchange-specific fields
-
-**Goal:** create a raw-format/schema matrix for all exchanges.
-
 ## Phase 3 — Canonical Schemas
 
 Define common MarketForge schemas for:
